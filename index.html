@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>억비의 캐비아 가게</title>
+  <style>
+    body {
+      margin: 0;
+      background: #ffe9b3;
+      font-family: "Malgun Gothic", sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 20px;
+      color: #d35400;
+    }
+
+    #game {
+      width: 500px;
+      margin: 20px auto;
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .pot {
+      width: 200px;
+      height: 200px;
+      margin: 20px auto;
+      border-radius: 50%;
+      background: #555;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .water {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 50%;
+      background: #87ceeb;
+      transition: 0.3s;
+    }
+
+    .ramen {
+      position: absolute;
+      width: 100%;
+      height: 40%;
+      bottom: 20%;
+      background: #f1c40f;
+      border-radius: 50%;
+      display: none;
+    }
+
+    button {
+      margin: 10px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      background: #ff7f50;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #ff5722;
+    }
+
+    #status {
+      font-size: 20px;
+      margin-top: 15px;
+    }
+
+    #score {
+      font-size: 22px;
+      color: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+
+  <h1> 억비의 캐비아 가게 </h1>
+
+  <div id="game">
+    <div class="pot">
+      <div class="water" id="water"></div>
+      <div class="ramen" id="ramen"></div>
+    </div>
+
+    <div>
+      <button onclick="addWater()">💧 물 넣기</button>
+      <button onclick="addRamen()">🍜 캐비아 넣기</button>
+      <button onclick="cook()">🔥 끓이기</button>
+      <button onclick="serve()">🙋 손님에게 주기</button>
+    </div>
+
+    <div id="status">라면을 만들어 주세요!</div>
+    <div id="score">점수: 0</div>
+  </div>
+
+  <script>
+    let hasWater = false;
+    let hasRamen = false;
+    let cooked = false;
+    let score = 0;
+
+    const statusText = document.getElementById("status");
+    const scoreText = document.getElementById("score");
+    const water = document.getElementById("water");
+    const ramen = document.getElementById("ramen");
+
+    function addWater() {
+      if (!hasWater) {
+        hasWater = true;
+        water.style.height = "60%";
+        statusText.innerText = "물을 넣었습니다!";
+      } else {
+        statusText.innerText = "이미 물이 있습니다!";
+      }
+    }
+
+    function addRamen() {
+      if (!hasWater) {
+        statusText.innerText = "먼저 물을 넣으세요!";
+        return;
+      }
+
+      if (!hasRamen) {
+        hasRamen = true;
+        ramen.style.display = "block";
+        statusText.innerText = "캐비아를 넣었습니다!";
+      } else {
+        statusText.innerText = "이미 캐비아가 있습니다!";
+      }
+    }
+
+    function cook() {
+      if (hasWater && hasRamen) {
+        cooked = true;
+        water.style.background = "#ff9966";
+        statusText.innerText = "캐비아 수프가가 맛있게 끓고 있습니다!";
+      } else {
+        statusText.innerText = "재료가 부족합니다!";
+      }
+    }
+
+    function serve() {
+      if (cooked) {
+        score += 10;
+        scoreText.innerText = "점수: " + score;
+        statusText.innerText = "손님이 맛있게 먹었습니다! 😋";
+
+        // 초기화
+        hasWater = false;
+        hasRamen = false;
+        cooked = false;
+
+        water.style.height = "50%";
+        water.style.background = "#87ceeb";
+        ramen.style.display = "none";
+      } else {
+        statusTex가 아직 안 끓었습니다!";
+      }
+    }
+  </script>
+
+</body>
+</html>
