@@ -1,172 +1,343 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>억비의 캐비아 가게</title>
-  <style>
-    body {
-      margin: 0;
-      background: #ffe9b3;
-      font-family: "Malgun Gothic", sans-serif;
-      text-align: center;
-    }
+<meta charset="UTF-8">
+<title>억비비의 라면가게</title>
 
-    h1 {
-      margin-top: 20px;
-      color: #d35400;
-    }
+<style>
+body{
+    margin:0;
+    background:#ffe4b5;
+    font-family:'Malgun Gothic';
+    user-select:none;
+}
 
-    #game {
-      width: 500px;
-      margin: 20px auto;
-      background: white;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    }
+h1{
+    text-align:center;
+    margin:10px;
+    color:#d35400;
+}
 
-    .pot {
-      width: 200px;
-      height: 200px;
-      margin: 20px auto;
-      border-radius: 50%;
-      background: #555;
-      position: relative;
-      overflow: hidden;
-    }
+#top{
+    width:1000px;
+    margin:auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:24px;
+    font-weight:bold;
+}
 
-    .water {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      height: 50%;
-      background: #87ceeb;
-      transition: 0.3s;
-    }
+#game{
+    width:1000px;
+    margin:20px auto;
+    display:flex;
+    justify-content:space-between;
+}
 
-    .ramen {
-      position: absolute;
-      width: 100%;
-      height: 40%;
-      bottom: 20%;
-      background: #f1c40f;
-      border-radius: 50%;
-      display: none;
-    }
+#ingredients{
+    width:180px;
+    background:white;
+    padding:15px;
+    border-radius:15px;
+    box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
 
-    button {
-      margin: 10px;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 10px;
-      background: #ff7f50;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
+.item{
+    background:#ffcc80;
+    margin:10px 0;
+    padding:15px;
+    border-radius:10px;
+    text-align:center;
+    cursor:pointer;
+    font-weight:bold;
+}
 
-    button:hover {
-      background: #ff5722;
-    }
+.item:hover{
+    background:#ffb74d;
+}
 
-    #status {
-      font-size: 20px;
-      margin-top: 15px;
-    }
+#pots{
+    width:760px;
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:30px;
+}
 
-    #score {
-      font-size: 22px;
-      color: #e74c3c;
-    }
-  </style>
+.pot{
+    width:320px;
+    height:220px;
+    background:#555;
+    border-radius:20px;
+    position:relative;
+    overflow:hidden;
+    cursor:pointer;
+}
+
+.water{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:0%;
+    background:#64b5f6;
+    transition:0.2s;
+}
+
+.noodle{
+    position:absolute;
+    width:80%;
+    height:40px;
+    background:gold;
+    border-radius:50%;
+    left:10%;
+    top:90px;
+    display:none;
+}
+
+.status{
+    position:absolute;
+    top:10px;
+    width:100%;
+    text-align:center;
+    color:white;
+    font-weight:bold;
+}
+
+.boil{
+    animation: boil 0.3s infinite alternate;
+}
+
+@keyframes boil{
+    from{transform:translateY(0);}
+    to{transform:translateY(-3px);}
+}
+
+.burn{
+    background:#111 !important;
+}
+
+#message{
+    text-align:center;
+    font-size:28px;
+    margin-top:20px;
+    color:#c0392b;
+}
+</style>
 </head>
+
 <body>
 
-  <h1> 억비의 캐비아 가게 </h1>
+<h1>🍜 억비의 라면 가게 🍜</h1>
 
-  <div id="game">
-    <div class="pot">
-      <div class="water" id="water"></div>
-      <div class="ramen" id="ramen"></div>
+<div id="top">
+    <div>💰 돈 : <span id="money">0</span>원</div>
+    <div>⏰ 시간 : <span id="time">60</span>초</div>
+</div>
+
+<div id="game">
+
+    <div id="ingredients">
+        <div class="item" onclick="selectItem('water')">💧 물</div>
+        <div class="item" onclick="selectItem('ramen')">🍜 라면</div>
+        <div class="item" onclick="selectItem('soup')">🧂 스프</div>
+        <div class="item" onclick="selectItem('egg')">🥚 계란</div>
+        <div class="item" onclick="selectItem('green')">🧅 캐비아</div>
     </div>
 
-    <div>
-      <button onclick="addWater()">💧 물 넣기</button>
-      <button onclick="addRamen()">🍜 캐비아 넣기</button>
-      <button onclick="cook()">🔥 끓이기</button>
-      <button onclick="serve()">🙋 손님에게 주기</button>
-    </div>
+    <div id="pots"></div>
 
-    <div id="status">라면을 만들어 주세요!</div>
-    <div id="score">점수: 0</div>
-  </div>
+</div>
 
-  <script>
-    let hasWater = false;
-    let hasRamen = false;
-    let cooked = false;
-    let score = 0;
+<div id="message">재료를 선택 후 냄비를 클릭하세요!</div>
 
-    const statusText = document.getElementById("status");
-    const scoreText = document.getElementById("score");
-    const water = document.getElementById("water");
-    const ramen = document.getElementById("ramen");
+<script>
 
-    function addWater() {
-      if (!hasWater) {
-        hasWater = true;
-        water.style.height = "60%";
-        statusText.innerText = "물을 넣었습니다!";
-      } else {
-        statusText.innerText = "이미 물이 있습니다!";
-      }
+const potsDiv = document.getElementById('pots');
+
+let selected = null;
+let money = 0;
+let time = 60;
+
+document.getElementById('money').innerText = money;
+
+function selectItem(item){
+    selected = item;
+    document.getElementById('message').innerText =
+        item + " 선택!";
+}
+
+class Pot{
+    constructor(index){
+        this.index = index;
+
+        this.water=false;
+        this.ramen=false;
+        this.soup=false;
+        this.egg=false;
+        this.green=false;
+
+        this.boiling=false;
+        this.burned=false;
+        this.done=false;
+
+        this.time=0;
+
+        this.element=document.createElement('div');
+        this.element.className='pot';
+
+        this.status=document.createElement('div');
+        this.status.className='status';
+
+        this.waterDiv=document.createElement('div');
+        this.waterDiv.className='water';
+
+        this.noodle=document.createElement('div');
+        this.noodle.className='noodle';
+
+        this.element.appendChild(this.waterDiv);
+        this.element.appendChild(this.noodle);
+        this.element.appendChild(this.status);
+
+        this.element.onclick=()=>this.click();
+
+        potsDiv.appendChild(this.element);
+
+        setInterval(()=>this.update(),100);
     }
 
-    function addRamen() {
-      if (!hasWater) {
-        statusText.innerText = "먼저 물을 넣으세요!";
-        return;
-      }
+    click(){
 
-      if (!hasRamen) {
-        hasRamen = true;
-        ramen.style.display = "block";
-        statusText.innerText = "캐비아를 넣었습니다!";
-      } else {
-        statusText.innerText = "이미 캐비아가 있습니다!";
-      }
+        if(this.burned)return;
+
+        if(selected==='water' && !this.water){
+            this.water=true;
+            this.waterDiv.style.height='50%';
+            this.status.innerText='물';
+        }
+
+        else if(selected==='ramen' && this.water){
+            this.ramen=true;
+            this.noodle.style.display='block';
+            this.status.innerText='면';
+        }
+
+        else if(selected==='soup' && this.ramen){
+            this.soup=true;
+            this.status.innerText='스프';
+        }
+
+        else if(selected==='egg' && this.boiling){
+            this.egg=true;
+            this.status.innerText='계란';
+        }
+
+        else if(selected==='green' && this.boiling){
+            this.green=true;
+            this.status.innerText='캐비아아';
+        }
+
+        else if(selected===null && this.done){
+            this.serve();
+        }
+
     }
 
-    function cook() {
-      if (hasWater && hasRamen) {
-        cooked = true;
-        water.style.background = "#ff9966";
-        statusText.innerText = "캐비아 수프가가 맛있게 끓고 있습니다!";
-      } else {
-        statusText.innerText = "재료가 부족합니다!";
-      }
+    update(){
+
+        if(this.water && this.ramen && this.soup && !this.done){
+
+            this.time += 0.1;
+
+            if(this.time > 3 && !this.boiling){
+                this.boiling=true;
+                this.element.classList.add('boil');
+                this.status.innerText='끓는 중!';
+            }
+
+            if(this.time > 6){
+                this.burn();
+            }
+
+            if(this.boiling && this.egg && this.green){
+                this.done=true;
+                this.status.innerText='완성!';
+            }
+        }
     }
 
-    function serve() {
-      if (cooked) {
-        score += 10;
-        scoreText.innerText = "점수: " + score;
-        statusText.innerText = "손님이 맛있게 먹었습니다! 😋";
+    serve(){
 
-        // 초기화
-        hasWater = false;
-        hasRamen = false;
-        cooked = false;
+        let score=300;
 
-        water.style.height = "50%";
-        water.style.background = "#87ceeb";
-        ramen.style.display = "none";
-      } else {
-        statusTex가 아직 안 끓었습니다!";
-      }
+        if(this.done){
+            score=1000;
+        }
+
+        money += score;
+
+        document.getElementById('money').innerText=money;
+
+        document.getElementById('message').innerText =
+            score + "원 획득!";
+
+        this.reset();
     }
-  </script>
+
+    burn(){
+        this.burned=true;
+        this.element.classList.remove('boil');
+        this.element.classList.add('burn');
+        this.status.innerText='탐!!!';
+    }
+
+    reset(){
+
+        this.water=false;
+        this.ramen=false;
+        this.soup=false;
+        this.egg=false;
+        this.green=false;
+
+        this.boiling=false;
+        this.burned=false;
+        this.done=false;
+
+        this.time=0;
+
+        this.waterDiv.style.height='0%';
+        this.noodle.style.display='none';
+
+        this.element.classList.remove('boil');
+        this.element.classList.remove('burn');
+
+        this.status.innerText='';
+    }
+}
+
+for(let i=0;i<4;i++){
+    new Pot(i);
+}
+
+setInterval(()=>{
+
+    time--;
+
+    document.getElementById('time').innerText=time;
+
+    if(time<=0){
+
+        if(money>=10000){
+            alert("🎉 성공! 슈가 끓여준 라면이 최고야!");
+        }else{
+            alert("😭 실패! 넌 설거지나 해!");
+        }
+
+        location.reload();
+    }
+
+},1000);
+
+</script>
 
 </body>
 </html>
